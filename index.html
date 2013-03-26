@@ -2,25 +2,29 @@
 <html ng-app="Transport">
     <head>
         <title>Open Data Transport API with AngularJS example</title>
-        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.css"/>
     </head>
     <body>
-        <div ng-controller="TransportCtrl">
-            <h3>Open Data CH Transport API</h3>
-            <form class="form-horizontal">
-                <input id="stationName" type="text" ng-model="stationName">
-                <button class="btn" ng-click="doSearch()"><i class="icon-search"></i>Search</button>
-            </form>
-            <table class="table table-striped">
-                <tr ng-repeat="location in locationsResult.stations">
-                    <td>{{location.name}}</td>
-                </tr>
-            </table>
+        <div ng-controller="TransportCtrl" data-role="page">
+            <div data-role="header">
+                <h3>Open Data CH Transport API</h3>
+            </div>
+
+            <div data-role="content">
+                <input type="search" ng-model="stationName" data-clear-button="true" ng-change="doSearch()">
+                <ul data-role="listview" data-inset="true">
+                    <li ng-repeat="location in locationsResult.stations">
+                        <a href="#">{{location.name}}</a>
+                    </li>
+                </ul>
+            </div>
         </div>
 
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.3/angular.min.js"></script>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.3/angular-resource.min.js"></script>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+        <script src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.3.0/jquery.mobile-1.3.0.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.3/angular.min.js"></script>
+        <script type="text/javascript" src="jquery-mobile-angular-adapter-1.2.0.js"></script>
         <script type="text/javascript" src="transport.js"></script>
     </body>
 </html>

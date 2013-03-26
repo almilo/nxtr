@@ -19,14 +19,8 @@ function TransportCtrl($scope, $http) {
             });
     };
 
-    function setPlaceholder(value) {
-        $("#stationName").attr("placeholder", value);
-    }
-
     function geoLocate() {
         if (navigator.geolocation) {
-            setPlaceholder("Locating...");
-
             navigator.geolocation.getCurrentPosition(function (position) {
                     var x = position.coords.latitude;
                     var y = position.coords.longitude;
@@ -40,14 +34,10 @@ function TransportCtrl($scope, $http) {
                         }).error(function(data, status) {
                             $scope.locationsResult = {stations: [{name: "Error code: '" + status + "' retrieving locations."}]};
                         });
-
-                    setPlaceholder("");
-                },
-                function () {
-                    setPlaceholder("");
                 });
         }
     }
 
     geoLocate();
+    //$scope.doSearch("Basel");
 }
