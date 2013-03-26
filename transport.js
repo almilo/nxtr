@@ -41,4 +41,5 @@ function TransportCtrl($scope, $http) {
     }
 
     geoLocate();
+    //$scope.doSearch("Basel");
 }
