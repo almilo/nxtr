@@ -19,33 +19,24 @@ function TransportCtrl($scope, $http) {
             });
     };
 
-    function setPlaceholder(value) {
-        $("#stationName").attr("placeholder", value);
-    }
-
     function geoLocate() {
         if (navigator.geolocation) {
-            setPlaceholder("Locating...");
-
             navigator.geolocation.getCurrentPosition(function (position) {
-                    var x = position.coords.latitude;
-                    var y = position.coords.longitude;
+                var x = position.coords.latitude;
+                var y = position.coords.longitude;
 
-                    $http.get(
-                        LOCATIONS_SERVICE,
-                        {params: {x: x, y: y}}
-                    ).success(function (data) {
-                            var stationName = data.stations.length > 0 ? data.stations[0].name : "";
-                            $scope.doSearch(stationName);
-                        }).error(function(data, status) {
-                            $scope.locationsResult = {stations: [{name: "Error code: '" + status + "' retrieving locations."}]};
-                        });
-
-                    setPlaceholder("");
-                },
-                function () {
-                    setPlaceholder("");
-                });
+                $http.get(
+                    LOCATIONS_SERVICE,
+                    {params: {x: x, y: y}}
+                ).success(function (data) {
+                        var stationName = data.stations.length > 0 ? data.stations[0].name : "";
+                        $scope.doSearch(stationName);
+                    }).error(function (data, status) {
+                        $scope.locationsResult = {stations: [
+                            {name: "Error code: '" + status + "' retrieving locations."}
+                        ]};
+                    });
+            });
         }
     }
 
