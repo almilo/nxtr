@@ -37,6 +37,10 @@ nextTrainApp.directive("stationselector", function (EventBus) {
                 EventBus.on(nextTrainApp.GEOLOCATION_STARTED_EVENT, function () {
                     scope.label = "Geolocating closest station...";
                 });
+
+                EventBus.on(nextTrainApp.GEOLOCATION_ENDED_EVENT, function (event, stationName) {
+                    scope.label = stationName;
+                });
             }
         };
     }
