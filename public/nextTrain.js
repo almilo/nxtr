@@ -54,11 +54,11 @@ nextTrainApp.directive("stationselector", function (EventBus) {
 nextTrainApp.directive("stationboard", function (EventBus) {
         return {
             restrict: "E",
-            template: "<p ng-show='fetching'>Fetching departures...</p>" +
-                "<div id='stationBoardResults' ng-hide='fetching'>" +
-                "<p ng-show='stationBoard == null'>Please, choose first a departure station above to see the next departures.</p>" +
-                "<p ng-show='stationBoard != null && stationBoard.length == 0'>No departures found</p>" +
-                "<ul data-role='listview' data-inset='true'>" +
+            template: "<p id='fetchingLabel' ng-show='fetching'>Fetching departures...</p>" +
+                "<div ng-hide='fetching'>" +
+                "<p id='hintLabel' ng-show='stationBoard == null'>Please, choose first a departure station above to see the next departures.</p>" +
+                "<p id='notFoundLabel' ng-show='stationBoard != null && stationBoard.length == 0'>No departures found</p>" +
+                "<ul id='departuresList' data-role='listview' data-inset='true'>" +
                 "<li ng-repeat='departure in stationBoard | limitTo: 10'>" +
                 "{{departure.stop.departure | hour}} - {{departure.name}} to {{departure.to}}" +
                 "</li>" +
@@ -80,11 +80,11 @@ nextTrainApp.directive("stationboard", function (EventBus) {
 nextTrainApp.directive("stationsearch", function (EventBus) {
         return {
             restrict: "E",
-            template: "<input type='search' ng-model='stationName' data-clear-button='true' placeholder='Type to search...' ng-change='searchStation(&quot;{{stationName}}&quot;)'>" +
-                "<p ng-show='searching'>Searching...</p>" +
+            template: "<input id='searchBox' type='search' ng-model='stationName' data-clear-button='true' placeholder='Type to search...' ng-change='searchStation(&quot;{{stationName}}&quot;)'>" +
+                "<p id='searchingLabel' ng-show='searching'>Searching...</p>" +
                 "<div ng-hide='searching'>" +
                 "<p ng-show='locations != null && locations.length == 0'>No stations found</p>" +
-                "<ul data-role='listview' data-inset='true'>" +
+                "<ul id='stationsList' data-role='listview' data-inset='true'>" +
                 "<li ng-repeat='location in locations | limitTo: 10'>" +
                 "<a href='#main' ng-click='selectStation(&quot;{{location.name}}&quot;)' data-transition='slide' data-direction='reverse'>{{location.name}}</a>" +
                 "</li>" +
