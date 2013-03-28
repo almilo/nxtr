@@ -75,7 +75,7 @@ nextTrainApp.directive("stationboard", function (EventBus) {
 nextTrainApp.directive("stationsearch", function (EventBus) {
         return {
             restrict: "E",
-            template: "<input type='search' ng-model='stationName' data-clear-button='true' ng-change='searchStation(&quot;{{stationName}}&quot;)'>" +
+            template: "<input type='search' ng-model='stationName' data-clear-button='true' placeholder='Type to search...' ng-change='searchStation(&quot;{{stationName}}&quot;)'>" +
                 "<p ng-show='searching'>Searching...</p>" +
                 "<div ng-hide='searching'>" +
                 "<p ng-show='locations != null && locations.length == 0'>No stations found</p>" +
@@ -193,7 +193,7 @@ nextTrainApp.controller("MainCtrl", function ($scope, $timeout, EventBus, Locati
             });
     }
 
-    $scope.geolocateClosestStation = function() {
+    $scope.geolocateClosestStation = function () {
         if (navigator.geolocation) {
             EventBus.fire(nextTrainApp.GEOLOCATION_STARTED_EVENT);
 
@@ -239,4 +239,8 @@ nextTrainApp.controller("SearchCtrl", function ($scope, EventBus, LocationsSvc) 
     $scope.selectStation = function (stationName) {
         EventBus.fire(nextTrainApp.STATION_CHANGED_EVENT, stationName);
     };
+});
+
+$(document).bind('pageshow', function () {
+    $($('.ui-page.ui-page-active :input:visible')[0]).focus();
 });
