@@ -10,6 +10,9 @@ basePath = '';
 files = [
   JASMINE,
   JASMINE_ADAPTER,
+  'http://code.jquery.com/jquery-1.9.0.min.js',
+  'http://code.angularjs.org/1.1.3/angular.js',
+  'http://code.angularjs.org/1.1.3/angular-mocks.js',
   'public/nextTrain.js',
   'test/*Spec.js'
 ];

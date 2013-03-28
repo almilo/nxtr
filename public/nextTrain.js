@@ -13,7 +13,12 @@ nextTrainApp.LOCATIONS_SEARCH_BY_POSITION_ENDED_EVENT = "locationsSearchByPositi
 
 nextTrainApp.filter("hour", function () {
     return function (isoTime) {
-        return isoTime.match(/.*T(.*)\+.*/)[1];
+        if (isoTime == null) {
+            return null;
+        }
+
+        var results = isoTime.match(/.*T(.*)\+.*/);
+        return results != null && results.length > 1 ? results[1] : "";
     };
 });
 
