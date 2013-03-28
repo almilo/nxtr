@@ -1,29 +1,29 @@
-var transportApp = angular.module("TransportApp", []);
+var nextTrainApp = angular.module("NextTrainApp", []);
 
-transportApp.STATION_CHANGED_EVENT = "stationChanged";
-transportApp.GEOLOCATION_STARTED_EVENT = "geolocationStarted";
-transportApp.GEOLOCATION_ENDED_EVENT = "geolocationEnded";
+nextTrainApp.STATION_CHANGED_EVENT = "stationChanged";
+nextTrainApp.GEOLOCATION_STARTED_EVENT = "geolocationStarted";
+nextTrainApp.GEOLOCATION_ENDED_EVENT = "geolocationEnded";
 
-transportApp.STATIONBOARD_FETCH_STARTED_EVENT = "stationBoardFetchStarted";
-transportApp.STATIONBOARD_FETCH_ENDED_EVENT = "stationBoardFetchEnded";
-transportApp.LOCATIONS_SEARCH_BY_NAME_STARTED_EVENT = "locationsSearchByNameStarted";
-transportApp.LOCATIONS_SEARCH_BY_NAME_ENDED_EVENT = "locationsSearchByNameEnded";
-transportApp.LOCATIONS_SEARCH_BY_POSITION_STARTED_EVENT = "locationsSearchByPositionStarted";
-transportApp.LOCATIONS_SEARCH_BY_POSITION_ENDED_EVENT = "locationsSearchByPositionEnded";
+nextTrainApp.STATIONBOARD_FETCH_STARTED_EVENT = "stationBoardFetchStarted";
+nextTrainApp.STATIONBOARD_FETCH_ENDED_EVENT = "stationBoardFetchEnded";
+nextTrainApp.LOCATIONS_SEARCH_BY_NAME_STARTED_EVENT = "locationsSearchByNameStarted";
+nextTrainApp.LOCATIONS_SEARCH_BY_NAME_ENDED_EVENT = "locationsSearchByNameEnded";
+nextTrainApp.LOCATIONS_SEARCH_BY_POSITION_STARTED_EVENT = "locationsSearchByPositionStarted";
+nextTrainApp.LOCATIONS_SEARCH_BY_POSITION_ENDED_EVENT = "locationsSearchByPositionEnded";
 
-transportApp.filter("hour", function () {
+nextTrainApp.filter("hour", function () {
     return function (isoTime) {
         return isoTime.match(/.*T(.*)\+.*/)[1];
     };
 });
 
-transportApp.filter("empty", function () {
+nextTrainApp.filter("empty", function () {
     return function (value, emptyValue) {
         return value == null || value == "" ? emptyValue : value;
     };
 });
 
-transportApp.directive("stationselector", function (EventBus) {
+nextTrainApp.directive("stationselector", function (EventBus) {
         return {
             restrict: "E",
             scope: {
@@ -34,7 +34,7 @@ transportApp.directive("stationselector", function (EventBus) {
                 "<li><a href='#search' data-transition='slide'>{{label | empty:emptylabel}}</a></li>" +
                 "</ul>",
             link: function (scope) {
-                EventBus.on(transportApp.GEOLOCATION_STARTED_EVENT, function () {
+                EventBus.on(nextTrainApp.GEOLOCATION_STARTED_EVENT, function () {
                     scope.label = "Geolocating closest station...";
                 });
             }
@@ -42,7 +42,7 @@ transportApp.directive("stationselector", function (EventBus) {
     }
 );
 
-transportApp.directive("stationboard", function (EventBus) {
+nextTrainApp.directive("stationboard", function (EventBus) {
         return {
             restrict: "E",
             template: "<p ng-show='fetching'>Fetching departures...</p>" +
@@ -56,11 +56,11 @@ transportApp.directive("stationboard", function (EventBus) {
                 "</ul>" +
                 "</div>",
             link: function (scope) {
-                EventBus.on(transportApp.STATIONBOARD_FETCH_STARTED_EVENT, function () {
+                EventBus.on(nextTrainApp.STATIONBOARD_FETCH_STARTED_EVENT, function () {
                     scope.fetching = true;
                 });
 
-                EventBus.on(transportApp.STATIONBOARD_FETCH_ENDED_EVENT, function () {
+                EventBus.on(nextTrainApp.STATIONBOARD_FETCH_ENDED_EVENT, function () {
                     scope.fetching = false;
                 });
             }
@@ -68,7 +68,7 @@ transportApp.directive("stationboard", function (EventBus) {
     }
 );
 
-transportApp.directive("stationsearch", function (EventBus) {
+nextTrainApp.directive("stationsearch", function (EventBus) {
         return {
             restrict: "E",
             template: "<input type='search' ng-model='stationName' data-clear-button='true' ng-change='searchStation(&quot;{{stationName}}&quot;)'>" +
@@ -82,11 +82,11 @@ transportApp.directive("stationsearch", function (EventBus) {
                 "</ul>" +
                 "</div>",
             link: function (scope) {
-                EventBus.on(transportApp.LOCATIONS_SEARCH_BY_NAME_STARTED_EVENT, function () {
+                EventBus.on(nextTrainApp.LOCATIONS_SEARCH_BY_NAME_STARTED_EVENT, function () {
                     scope.searching = true;
                 });
 
-                EventBus.on(transportApp.LOCATIONS_SEARCH_BY_NAME_ENDED_EVENT, function () {
+                EventBus.on(nextTrainApp.LOCATIONS_SEARCH_BY_NAME_ENDED_EVENT, function () {
                     scope.searching = false;
                 });
             }
@@ -94,41 +94,41 @@ transportApp.directive("stationsearch", function (EventBus) {
     }
 );
 
-transportApp.factory("LocationsSvc", function ($http, EventBus) {
+nextTrainApp.factory("LocationsSvc", function ($http, EventBus) {
     var LOCATIONS_SERVICE_URL = "http://transport.opendata.ch/v1/locations";
 
     return {
         searchByPosition: function (lat, lng, success, error) {
-            EventBus.fire(transportApp.LOCATIONS_SEARCH_BY_POSITION_STARTED_EVENT);
+            EventBus.fire(nextTrainApp.LOCATIONS_SEARCH_BY_POSITION_STARTED_EVENT);
 
             $http.get(
                 LOCATIONS_SERVICE_URL,
                 {params: {x: lat, y: lng}})
                 .success(function (data) {
-                    EventBus.fire(transportApp.LOCATIONS_SEARCH_BY_POSITION_ENDED_EVENT);
+                    EventBus.fire(nextTrainApp.LOCATIONS_SEARCH_BY_POSITION_ENDED_EVENT);
 
                     success(data);
                 })
                 .error(function () {
-                    EventBus.fire(transportApp.LOCATIONS_SEARCH_BY_NAME_POSITION_ENDED_EVENT);
+                    EventBus.fire(nextTrainApp.LOCATIONS_SEARCH_BY_NAME_POSITION_ENDED_EVENT);
 
                     error();
                 });
         },
 
         searchByStationName: function (query, success, error) {
-            EventBus.fire(transportApp.LOCATIONS_SEARCH_BY_NAME_STARTED_EVENT);
+            EventBus.fire(nextTrainApp.LOCATIONS_SEARCH_BY_NAME_STARTED_EVENT);
 
             $http.get(
                 LOCATIONS_SERVICE_URL,
                 {params: {query: query}})
                 .success(function (data) {
-                    EventBus.fire(transportApp.LOCATIONS_SEARCH_BY_NAME_ENDED_EVENT);
+                    EventBus.fire(nextTrainApp.LOCATIONS_SEARCH_BY_NAME_ENDED_EVENT);
 
                     success(data);
                 })
                 .error(function () {
-                    EventBus.fire(transportApp.LOCATIONS_SEARCH_BY_NAME_ENDED_EVENT);
+                    EventBus.fire(nextTrainApp.LOCATIONS_SEARCH_BY_NAME_ENDED_EVENT);
 
                     error();
                 });
@@ -136,23 +136,23 @@ transportApp.factory("LocationsSvc", function ($http, EventBus) {
     };
 });
 
-transportApp.factory("StationBoardSvc", function ($http, EventBus) {
+nextTrainApp.factory("StationBoardSvc", function ($http, EventBus) {
     var STATIONBOARD_SERVICE_URL = "http://transport.opendata.ch/v1/stationboard";
 
     return {
         get: function (stationName, success, error) {
-            EventBus.fire(transportApp.STATIONBOARD_FETCH_STARTED_EVENT);
+            EventBus.fire(nextTrainApp.STATIONBOARD_FETCH_STARTED_EVENT);
 
             $http.get(
                 STATIONBOARD_SERVICE_URL,
                 {params: {station: stationName}})
                 .success(function (data) {
-                    EventBus.fire(transportApp.STATIONBOARD_FETCH_ENDED_EVENT);
+                    EventBus.fire(nextTrainApp.STATIONBOARD_FETCH_ENDED_EVENT);
 
                     success(data);
                 })
                 .error(function () {
-                    EventBus.fire(transportApp.STATIONBOARD_FETCH_ENDED_EVENT);
+                    EventBus.fire(nextTrainApp.STATIONBOARD_FETCH_ENDED_EVENT);
 
                     error();
                 }
@@ -161,7 +161,7 @@ transportApp.factory("StationBoardSvc", function ($http, EventBus) {
     };
 });
 
-transportApp.factory("EventBus", function ($rootScope) {
+nextTrainApp.factory("EventBus", function ($rootScope) {
     return {
         fire: function (event, params) {
             $rootScope.$broadcast(event, params);
@@ -175,7 +175,7 @@ transportApp.factory("EventBus", function ($rootScope) {
     };
 });
 
-transportApp.controller("MainCtrl", function ($scope, EventBus, LocationsSvc, StationBoardSvc) {
+nextTrainApp.controller("MainCtrl", function ($scope, EventBus, LocationsSvc, StationBoardSvc) {
     $scope.clear = function () {
         $scope.stationName = null;
         $scope.stationBoard = null;
@@ -191,16 +191,16 @@ transportApp.controller("MainCtrl", function ($scope, EventBus, LocationsSvc, St
             });
     }
 
-    EventBus.on(transportApp.GEOLOCATION_ENDED_EVENT, function (event, stationName) {
+    EventBus.on(nextTrainApp.GEOLOCATION_ENDED_EVENT, function (event, stationName) {
         setStationName(stationName);
     });
 
-    EventBus.on(transportApp.STATION_CHANGED_EVENT, function (event, stationName) {
+    EventBus.on(nextTrainApp.STATION_CHANGED_EVENT, function (event, stationName) {
         setStationName(stationName);
     });
 });
 
-transportApp.controller("SearchCtrl", function ($scope, EventBus, LocationsSvc) {
+nextTrainApp.controller("SearchCtrl", function ($scope, EventBus, LocationsSvc) {
     $scope.searchStation = function (stationName) {
         LocationsSvc.searchByStationName(
             "*" + stationName + "*",
@@ -210,14 +210,14 @@ transportApp.controller("SearchCtrl", function ($scope, EventBus, LocationsSvc) 
     };
 
     $scope.selectStation = function (stationName) {
-        EventBus.fire(transportApp.STATION_CHANGED_EVENT, stationName);
+        EventBus.fire(nextTrainApp.STATION_CHANGED_EVENT, stationName);
     };
 });
 
-transportApp.run(function ($timeout, EventBus, LocationsSvc) {
+nextTrainApp.run(function ($timeout, EventBus, LocationsSvc) {
     function geolocateClosestStation() {
         if (navigator.geolocation) {
-            EventBus.fire(transportApp.GEOLOCATION_STARTED_EVENT);
+            EventBus.fire(nextTrainApp.GEOLOCATION_STARTED_EVENT);
 
             navigator.geolocation.getCurrentPosition(function (position) {
                 LocationsSvc.searchByPosition(
@@ -226,10 +226,10 @@ transportApp.run(function ($timeout, EventBus, LocationsSvc) {
                     function (data) {
                         var stationLocated = data.stations.length > 0 ? data.stations[0].name : null;
 
-                        EventBus.fire(transportApp.GEOLOCATION_ENDED_EVENT, stationLocated);
+                        EventBus.fire(nextTrainApp.GEOLOCATION_ENDED_EVENT, stationLocated);
                     },
                     function (data, status) {
-                        EventBus.fire(transportApp.GEOLOCATION_ENDED_EVENT, null);
+                        EventBus.fire(nextTrainApp.GEOLOCATION_ENDED_EVENT, null);
                     });
             });
         }
