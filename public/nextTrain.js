@@ -202,19 +202,23 @@ nextTrainApp.controller("MainCtrl", function ($scope, $timeout, EventBus, Locati
         if (navigator.geolocation) {
             EventBus.fire(nextTrainApp.GEOLOCATION_STARTED_EVENT);
 
-            navigator.geolocation.getCurrentPosition(function (position) {
-                LocationsSvc.searchByPosition(
-                    position.coords.latitude,
-                    position.coords.longitude,
-                    function (data) {
-                        var stationLocated = data.stations.length > 0 ? data.stations[0].name : null;
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    LocationsSvc.searchByPosition(
+                        position.coords.latitude,
+                        position.coords.longitude,
+                        function (data) {
+                            var stationLocated = data.stations.length > 0 ? data.stations[0].name : null;
 
-                        EventBus.fire(nextTrainApp.GEOLOCATION_ENDED_EVENT, stationLocated);
-                    },
-                    function (data, status) {
-                        EventBus.fire(nextTrainApp.GEOLOCATION_ENDED_EVENT, null);
-                    });
-            });
+                            EventBus.fire(nextTrainApp.GEOLOCATION_ENDED_EVENT, stationLocated);
+                        },
+                        function (data, status) {
+                            EventBus.fire(nextTrainApp.GEOLOCATION_ENDED_EVENT, null);
+                        });
+                },
+                function (error) {
+                    EventBus.fire(nextTrainApp.GEOLOCATION_ENDED_EVENT, null);
+                });
         }
     };
 
