@@ -165,17 +165,15 @@ nextTrainApp.factory("EventBus", function ($rootScope) {
     return {
         fire: function (event, params) {
             $rootScope.$broadcast(event, params);
-            console.log("Fired: " + event);
         },
 
         on: function (event, listener) {
             $rootScope.$on(event, listener);
-            console.log("Registered: " + event);
         }
     };
 });
 
-nextTrainApp.controller("MainCtrl", function ($scope, EventBus, LocationsSvc, StationBoardSvc) {
+nextTrainApp.controller("MainCtrl", function ($scope, $timeout, EventBus, LocationsSvc, StationBoardSvc) {
     $scope.clear = function () {
         $scope.stationName = null;
         $scope.stationBoard = null;
@@ -191,31 +189,7 @@ nextTrainApp.controller("MainCtrl", function ($scope, EventBus, LocationsSvc, St
             });
     }
 
-    EventBus.on(nextTrainApp.GEOLOCATION_ENDED_EVENT, function (event, stationName) {
-        setStationName(stationName);
-    });
-
-    EventBus.on(nextTrainApp.STATION_CHANGED_EVENT, function (event, stationName) {
-        setStationName(stationName);
-    });
-});
-
-nextTrainApp.controller("SearchCtrl", function ($scope, EventBus, LocationsSvc) {
-    $scope.searchStation = function (stationName) {
-        LocationsSvc.searchByStationName(
-            "*" + stationName + "*",
-            function (data) {
-                $scope.locations = data.stations;
-            });
-    };
-
-    $scope.selectStation = function (stationName) {
-        EventBus.fire(nextTrainApp.STATION_CHANGED_EVENT, stationName);
-    };
-});
-
-nextTrainApp.run(function ($timeout, EventBus, LocationsSvc) {
-    function geolocateClosestStation() {
+    $scope.geolocateClosestStation = function() {
         if (navigator.geolocation) {
             EventBus.fire(nextTrainApp.GEOLOCATION_STARTED_EVENT);
 
@@ -233,10 +207,32 @@ nextTrainApp.run(function ($timeout, EventBus, LocationsSvc) {
                     });
             });
         }
-    }
+    };
 
+
+    EventBus.on(nextTrainApp.GEOLOCATION_ENDED_EVENT, function (event, stationName) {
+        setStationName(stationName);
+    });
+
+    EventBus.on(nextTrainApp.STATION_CHANGED_EVENT, function (event, stationName) {
+        setStationName(stationName);
+    });
 
     $timeout(function () {
-        geolocateClosestStation();
+        $scope.geolocateClosestStation();
     });
+});
+
+nextTrainApp.controller("SearchCtrl", function ($scope, EventBus, LocationsSvc) {
+    $scope.searchStation = function (stationName) {
+        LocationsSvc.searchByStationName(
+            "*" + stationName + "*",
+            function (data) {
+                $scope.locations = data.stations;
+            });
+    };
+
+    $scope.selectStation = function (stationName) {
+        EventBus.fire(nextTrainApp.STATION_CHANGED_EVENT, stationName);
+    };
 });
