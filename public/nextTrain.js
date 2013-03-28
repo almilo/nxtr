@@ -36,7 +36,7 @@ nextTrainApp.directive("stationselector", function (EventBus) {
                 emptylabel: "@"
             },
             template: "<ul data-role='listview' data-inset='true'>" +
-                "<li><a href='#search' data-transition='slide'>{{label | empty:emptylabel}}</a></li>" +
+                "<li><a id='stationName' href='#search' data-transition='slide'>{{label | empty:emptylabel}}</a></li>" +
                 "</ul>",
             link: function (scope) {
                 EventBus.on(nextTrainApp.GEOLOCATION_STARTED_EVENT, function () {
@@ -55,7 +55,7 @@ nextTrainApp.directive("stationboard", function (EventBus) {
         return {
             restrict: "E",
             template: "<p ng-show='fetching'>Fetching departures...</p>" +
-                "<div ng-hide='fetching'>" +
+                "<div id='stationBoardResults' ng-hide='fetching'>" +
                 "<p ng-show='stationBoard == null'>Please, choose first a departure station above to see the next departures.</p>" +
                 "<p ng-show='stationBoard != null && stationBoard.length == 0'>No departures found</p>" +
                 "<ul data-role='listview' data-inset='true'>" +
