@@ -97,6 +97,7 @@ nextTrainApp.directive("stationboardEntry", function () {
             restrict: "E",
             replace: true,
             template: "<li>" +
+                "<img src='{{departure.icon}}'/>"+
                 "<h2>{{departure.name}}</h2>" +
                 "<p><strong>to {{departure.to}}</strong></p>" +
                 "<p class='ui-li-aside'><strong>{{departure.stop.departure | date:'shortTime'}}</strong> ({{departure.stop.departure | minutes}})</p>" +
@@ -219,11 +220,39 @@ nextTrainApp.controller("MainCtrl", function ($scope, $timeout, EventBus, Locati
         $scope.stationBoard = null;
     };
 
+    function getIconForCategory(category) {
+        var icon = "train";
+
+        if (category.toUpperCase() == "TRAM") {
+            icon = "train";
+        }
+
+        if (category.toUpperCase() == "BAT") {
+            icon = "ship";
+        }
+
+        if (category.toUpperCase() == "BUS" || category.toUpperCase() == "TRO") {
+            icon = "bus";
+        }
+
+        return "img/" + icon + ".png";
+    }
+
+    function decorateWithIcon(stationBoard) {
+        if (stationBoard != null) {
+            stationBoard.forEach(function (departure) {
+                departure.icon = getIconForCategory(departure.category);
+            });
+        }
+
+        return stationBoard;
+    }
+
     function fetch(stationName) {
         StationBoardSvc.get(
             stationName,
             function (data) {
-                $scope.stationBoard = data.stationboard;
+                $scope.stationBoard = decorateWithIcon(data.stationboard);
             });
     }
 
