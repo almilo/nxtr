@@ -53,7 +53,7 @@ nextTrainApp.directive("stationselector", function (EventBus) {
                 "</ul>",
             link: function (scope) {
                 EventBus.on(nextTrainApp.GEOLOCATION_STARTED_EVENT, function () {
-                    scope.label = "Geolocating closest station...";
+                    scope.label = "Geolocating nearest station...";
                 });
 
                 EventBus.on(nextTrainApp.GEOLOCATION_ENDED_EVENT, function (event, stationName) {
@@ -67,7 +67,7 @@ nextTrainApp.directive("stationselector", function (EventBus) {
 nextTrainApp.directive("stationboard", function (EventBus) {
         return {
             restrict: "E",
-            template: "<p id='fetchingLabel' ng-show='fetching'>Fetching departures...</p>" +
+            template: "<p id='fetchingLabel' ng-show='fetching'>Fetching...</p>" +
                 "<div ng-hide='fetching'>" +
                 "<p id='hintLabel' ng-show='stationBoard == null'>Please, choose first a departure station above to see the next departures.</p>" +
                 "<p id='notFoundLabel' ng-show='stationBoard != null && stationBoard.length == 0'>No departures found</p>" +
