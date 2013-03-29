@@ -73,7 +73,7 @@ nextTrainApp.directive("stationboard", function (EventBus) {
                 "<p id='fetchingLabel' ng-show='fetching'>Fetching...</p>" +
                 "<div ng-hide='fetching'>" +
                 "<p id='hintLabel' ng-show='stationBoard == null'>Please, choose first a departure station above to see the next departures.</p>" +
-                "<p id='notFoundLabel' ng-show='stationBoard != null && stationBoard.length == 0'>No departures found</p>" +
+                "<p id='notFoundLabel' ng-show='stationBoard != null && stationBoard.length == 0'>No departures found.</p>" +
                 "<ul id='departuresList' data-role='listview' data-inset='true'>" +
                 "<stationboard-entry ng-repeat='departure in stationBoard | limitTo: 10' ng-model='departure'></stationboard-entry>" +
                 "</ul>" +
@@ -110,10 +110,10 @@ nextTrainApp.directive("stationsearch", function (EventBus) {
             restrict: "E",
             replace: true,
             template: "<div>" +
-                "<input id='searchBox' type='search' ng-model='stationName' data-clear-button='true' placeholder='Type to search...' ng-change='searchStation(&quot;{{stationName}}&quot;)'>" +
+                "<input id='searchBox' type='search' ng-model='stationName' data-clear-button='true' placeholder='Type to search...'>" +
                 "<p id='searchingLabel' ng-show='searching'>Searching...</p>" +
                 "<div ng-hide='searching'>" +
-                "<p ng-show='locations != null && locations.length == 0'>No stations found</p>" +
+                "<p ng-show='locations != null && locations.length == 0'>No stations found.</p>" +
                 "<ul id='stationsList' data-role='listview' data-inset='true'>" +
                 "<li ng-repeat='location in locations | limitTo: 10'>" +
                 "<a href='#main' ng-click='selectStation(&quot;{{location.name}}&quot;)' data-transition='slide' data-direction='reverse'>{{location.name}}</a>" +
@@ -268,17 +268,19 @@ nextTrainApp.controller("MainCtrl", function ($scope, $timeout, EventBus, Locati
 });
 
 nextTrainApp.controller("SearchCtrl", function ($scope, EventBus, LocationsSvc) {
-    $scope.searchStation = function (stationName) {
-        LocationsSvc.searchByStationName(
-            "*" + stationName + "*",
-            function (data) {
-                $scope.locations = data.stations;
-            });
-    };
-
     $scope.selectStation = function (stationName) {
         EventBus.fire(nextTrainApp.STATION_CHANGED_EVENT, stationName);
     };
+
+    $scope.$watch("stationName", function (newValue, oldValue) {
+        if (newValue != null) {
+            LocationsSvc.searchByStationName(
+                "*" + newValue + "*",
+                function (data) {
+                    $scope.locations = data.stations;
+                });
+        }
+    });
 });
 
 $(document).bind('pageshow', function () {
