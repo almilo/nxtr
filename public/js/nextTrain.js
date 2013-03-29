@@ -219,14 +219,22 @@ nextTrainApp.controller("MainCtrl", function ($scope, $timeout, EventBus, Locati
         $scope.stationBoard = null;
     };
 
-    function setStationName(stationName) {
-        $scope.stationName = stationName;
-
+    function fetch(stationName) {
         StationBoardSvc.get(
             stationName,
             function (data) {
                 $scope.stationBoard = data.stationboard;
             });
+    }
+
+    function setStationName(stationName) {
+        $scope.stationName = stationName;
+
+        fetch($scope.stationName);
+    }
+
+    $scope.update = function () {
+        fetch($scope.stationName);
     }
 
     $scope.findNearestStation = function () {
