@@ -49,7 +49,9 @@ nextTrainApp.directive("stationboard", function (EventBus) {
                 "<p id='notFoundLabel' ng-show='stationBoard != null && stationBoard.length == 0'>No departures found</p>" +
                 "<ul id='departuresList' data-role='listview' data-inset='true'>" +
                 "<li ng-repeat='departure in stationBoard | limitTo: 10'>" +
-                "{{departure.stop.departure | date:'shortTime'}} - {{departure.name}} to {{departure.to}}" +
+                "<h2>{{departure.name}}</h2>" +
+                "<p><strong>to {{departure.to}}</strong></p>" +
+                "<p class='ui-li-aside'><strong>{{departure.stop.departure | date:'shortTime'}}</strong></p>" +
                 "</li>" +
                 "</ul>" +
                 "</div>",
