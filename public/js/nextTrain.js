@@ -11,17 +11,6 @@ nextTrainApp.LOCATIONS_SEARCH_BY_NAME_ENDED_EVENT = "locationsSearchByNameEnded"
 nextTrainApp.LOCATIONS_SEARCH_BY_POSITION_STARTED_EVENT = "locationsSearchByPositionStarted";
 nextTrainApp.LOCATIONS_SEARCH_BY_POSITION_ENDED_EVENT = "locationsSearchByPositionEnded";
 
-nextTrainApp.filter("hour", function () {
-    return function (isoTime) {
-        if (isoTime == null) {
-            return null;
-        }
-
-        var results = isoTime.match(/.*T(.*)\+.*/);
-        return results != null && results.length > 1 ? results[1] : "";
-    };
-});
-
 nextTrainApp.filter("empty", function () {
     return function (value, emptyValue) {
         return value == null || value == "" ? emptyValue : value;
@@ -60,7 +49,7 @@ nextTrainApp.directive("stationboard", function (EventBus) {
                 "<p id='notFoundLabel' ng-show='stationBoard != null && stationBoard.length == 0'>No departures found</p>" +
                 "<ul id='departuresList' data-role='listview' data-inset='true'>" +
                 "<li ng-repeat='departure in stationBoard | limitTo: 10'>" +
-                "{{departure.stop.departure | hour}} - {{departure.name}} to {{departure.to}}" +
+                "{{departure.stop.departure | date:'shortTime'}} - {{departure.name}} to {{departure.to}}" +
                 "</li>" +
                 "</ul>" +
                 "</div>",
