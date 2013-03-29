@@ -17,16 +17,20 @@ nextTrainApp.filter("empty", function () {
     };
 });
 
-nextTrainApp.filter("minutes", function () {
-    return function (dateAsString, referenceDate) {
-        if (dateAsString == null) {
+nextTrainApp.filter("minutes", function ($filter) {
+    return function (isoDate, referenceDate) {
+        if (isoDate == null) {
             return null;
         }
         if (referenceDate == null) {
             referenceDate = new Date();
         }
 
-        var dateInMsecs = Date.parse(dateAsString);
+        var dateFilter = $filter("date");
+
+        var date = new Date(dateFilter(isoDate, "medium"));
+
+        var dateInMsecs = date.getTime();
         var referenceDateInMsecs = referenceDate.getTime();
 
         var diffInMsecs = dateInMsecs - referenceDateInMsecs;
@@ -84,13 +88,13 @@ nextTrainApp.directive("stationboard", function (EventBus) {
     }
 );
 
-nextTrainApp.directive("stationboardEntry", function (EventBus) {
+nextTrainApp.directive("stationboardEntry", function () {
         return {
             restrict: "E",
             template: "<li>" +
                 "<h2>{{departure.name}}</h2>" +
                 "<p><strong>to {{departure.to}}</strong></p>" +
-                "<p class='ui-li-aside'><strong>{{departure.stop.departure | date:'shortTime'}}</strong> {{departure.stop.departure | minutes}}</p>" +
+                "<p class='ui-li-aside'><strong>{{departure.stop.departure | date:'shortTime'}}</strong> ({{departure.stop.departure | minutes}})</p>" +
                 "</li>",
             replace: true
         };
