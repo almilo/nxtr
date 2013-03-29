@@ -48,6 +48,7 @@ nextTrainApp.directive("stationselector", function (EventBus) {
                 label: "@",
                 emptylabel: "@"
             },
+            replace: true,
             template: "<ul data-role='listview' data-inset='true'>" +
                 "<li><a id='stationName' href='#search' data-transition='slide'>{{label | empty:emptylabel}}</a></li>" +
                 "</ul>",
@@ -67,13 +68,16 @@ nextTrainApp.directive("stationselector", function (EventBus) {
 nextTrainApp.directive("stationboard", function (EventBus) {
         return {
             restrict: "E",
-            template: "<p id='fetchingLabel' ng-show='fetching'>Fetching...</p>" +
+            replace: true,
+            template: "<div>" +
+                "<p id='fetchingLabel' ng-show='fetching'>Fetching...</p>" +
                 "<div ng-hide='fetching'>" +
                 "<p id='hintLabel' ng-show='stationBoard == null'>Please, choose first a departure station above to see the next departures.</p>" +
                 "<p id='notFoundLabel' ng-show='stationBoard != null && stationBoard.length == 0'>No departures found</p>" +
                 "<ul id='departuresList' data-role='listview' data-inset='true'>" +
                 "<stationboard-entry ng-repeat='departure in stationBoard | limitTo: 10' ng-model='departure'></stationboard-entry>" +
                 "</ul>" +
+                "</div>" +
                 "</div>",
             link: function (scope) {
                 EventBus.on(nextTrainApp.STATIONBOARD_FETCH_STARTED_EVENT, function () {
@@ -91,12 +95,12 @@ nextTrainApp.directive("stationboard", function (EventBus) {
 nextTrainApp.directive("stationboardEntry", function () {
         return {
             restrict: "E",
+            replace: true,
             template: "<li>" +
                 "<h2>{{departure.name}}</h2>" +
                 "<p><strong>to {{departure.to}}</strong></p>" +
                 "<p class='ui-li-aside'><strong>{{departure.stop.departure | date:'shortTime'}}</strong> ({{departure.stop.departure | minutes}})</p>" +
-                "</li>",
-            replace: true
+                "</li>"
         };
     }
 );
@@ -104,7 +108,9 @@ nextTrainApp.directive("stationboardEntry", function () {
 nextTrainApp.directive("stationsearch", function (EventBus) {
         return {
             restrict: "E",
-            template: "<input id='searchBox' type='search' ng-model='stationName' data-clear-button='true' placeholder='Type to search...' ng-change='searchStation(&quot;{{stationName}}&quot;)'>" +
+            replace: true,
+            template: "<div>" +
+                "<input id='searchBox' type='search' ng-model='stationName' data-clear-button='true' placeholder='Type to search...' ng-change='searchStation(&quot;{{stationName}}&quot;)'>" +
                 "<p id='searchingLabel' ng-show='searching'>Searching...</p>" +
                 "<div ng-hide='searching'>" +
                 "<p ng-show='locations != null && locations.length == 0'>No stations found</p>" +
@@ -113,6 +119,7 @@ nextTrainApp.directive("stationsearch", function (EventBus) {
                 "<a href='#main' ng-click='selectStation(&quot;{{location.name}}&quot;)' data-transition='slide' data-direction='reverse'>{{location.name}}</a>" +
                 "</li>" +
                 "</ul>" +
+                "</div>" +
                 "</div>",
             link: function (scope) {
                 EventBus.on(nextTrainApp.LOCATIONS_SEARCH_BY_NAME_STARTED_EVENT, function () {
@@ -222,7 +229,7 @@ nextTrainApp.controller("MainCtrl", function ($scope, $timeout, EventBus, Locati
             });
     }
 
-    $scope.geolocateClosestStation = function () {
+    $scope.findNearestStation = function () {
         if (navigator.geolocation) {
             EventBus.fire(nextTrainApp.GEOLOCATION_STARTED_EVENT);
 
@@ -256,7 +263,7 @@ nextTrainApp.controller("MainCtrl", function ($scope, $timeout, EventBus, Locati
     });
 
     $timeout(function () {
-        $scope.geolocateClosestStation();
+        $scope.findNearestStation();
     });
 });
 
