@@ -17,6 +17,26 @@ nextTrainApp.filter("empty", function () {
     };
 });
 
+nextTrainApp.filter("minutes", function () {
+    return function (dateAsString, referenceDate) {
+        if (dateAsString == null) {
+            return null;
+        }
+        if (referenceDate == null) {
+            referenceDate = new Date();
+        }
+
+        var dateInMsecs = Date.parse(dateAsString);
+        var referenceDateInMsecs = referenceDate.getTime();
+
+        var diffInMsecs = dateInMsecs - referenceDateInMsecs;
+        var diffInMins = diffInMsecs == 0 ? 0 : Math.ceil(diffInMsecs / (1000 * 60));
+
+        var units = Math.abs(diffInMins) == 1 ? " min" : " mins";
+        return diffInMins + units;
+    };
+});
+
 nextTrainApp.directive("stationselector", function (EventBus) {
         return {
             restrict: "E",
@@ -48,11 +68,7 @@ nextTrainApp.directive("stationboard", function (EventBus) {
                 "<p id='hintLabel' ng-show='stationBoard == null'>Please, choose first a departure station above to see the next departures.</p>" +
                 "<p id='notFoundLabel' ng-show='stationBoard != null && stationBoard.length == 0'>No departures found</p>" +
                 "<ul id='departuresList' data-role='listview' data-inset='true'>" +
-                "<li ng-repeat='departure in stationBoard | limitTo: 10'>" +
-                "<h2>{{departure.name}}</h2>" +
-                "<p><strong>to {{departure.to}}</strong></p>" +
-                "<p class='ui-li-aside'><strong>{{departure.stop.departure | date:'shortTime'}}</strong></p>" +
-                "</li>" +
+                "<stationboard-entry ng-repeat='departure in stationBoard | limitTo: 10' ng-model='departure'></stationboard-entry>" +
                 "</ul>" +
                 "</div>",
             link: function (scope) {
@@ -64,6 +80,19 @@ nextTrainApp.directive("stationboard", function (EventBus) {
                     scope.fetching = false;
                 });
             }
+        };
+    }
+);
+
+nextTrainApp.directive("stationboardEntry", function (EventBus) {
+        return {
+            restrict: "E",
+            template: "<li>" +
+                "<h2>{{departure.name}}</h2>" +
+                "<p><strong>to {{departure.to}}</strong></p>" +
+                "<p class='ui-li-aside'><strong>{{departure.stop.departure | date:'shortTime'}}</strong> {{departure.stop.departure | minutes}}</p>" +
+                "</li>",
+            replace: true
         };
     }
 );
