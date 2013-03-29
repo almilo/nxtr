@@ -3,7 +3,7 @@ describe("Search Station view", function() {
         browser().navigateTo('/index.html#search');
     });
 
-    it('should have a geolocation message and a default message but not departures not found and fetching', function() {
+    it('should have empty search box and stations list be visible and empty', function() {
         expect(browser().location().hash()).toBe("search");
         expect(element('#searchBox').text()).toBe('');
         expect(element('#stationsList').css("display")).not().toBe("none");
